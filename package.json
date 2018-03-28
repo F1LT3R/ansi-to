@@ -21,7 +21,26 @@
 	"files": [
 		"index.js"
 	],
-	"keywords": [],
+	"keywords": [
+		"ansi-to-html",
+		"ansi-to-image",
+		"ansi-to-svg",
+		"ansi-to-dataurl",
+		"ansi",
+		"escape",
+		"convert",
+		"console",
+		"color",
+		"chalk",
+		"terminal",
+		"html",
+		"image",
+		"jpg",
+		"png",
+		"svg",
+		"data url",
+		"log"
+	],
 	"dependencies": {
 		"align-text": "^1.0.2",
 		"ansi-regex": "^3.0.0",
@@ -53,7 +72,10 @@
 		"rules": {
 			"no-console": 1,
 			"space-before-function-paren": 0
-		}
+		},
+		"ignores": [
+			"examples/**/*"
+		]
 	},
 	"ava": {
 		"failFast": true

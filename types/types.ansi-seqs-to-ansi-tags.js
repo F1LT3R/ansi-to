@@ -1,3 +1,4 @@
+/* eslint-disable unicorn/escape-case */
 module.exports = {
 	'\u001b[30m': 'black',
 	'\u001b[31m': 'red',
@@ -8,7 +9,6 @@ module.exports = {
 	'\u001b[36m': 'cyan',
 	'\u001b[37m': 'white',
 
-	'\u001b[90m': 'blackBright',
 	'\u001b[90m': 'gray',
 	'\u001b[91m': 'redBright',
 	'\u001b[92m': 'greenBright',
@@ -56,3 +56,4 @@ module.exports = {
 
 	'\u001b[0m': 'reset'
 }
+/* eslint-enable unicorn/escape-case */
