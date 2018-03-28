@@ -2,7 +2,7 @@
 	"name": "ansi-to",
 	"main": "ansi-to",
 	"version": "1.0.0",
-	"description": "😹  Export ANSI color strings to: HTML, Image; with iTerm2 Base16 Color support.",
+	"description": "😹  export ANSI color strings to HTML, Image w/ iTerm2 color support",
 	"license": "MIT",
 	"repository": "F1LT3R/ansi-to",
 	"author": {
