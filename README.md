@@ -16,6 +16,7 @@
 - Designed for use with [Chalk](https://github.com/chalk/chalk)
 - iTerm2 Preset support 
     + Eg: ANSI-to can load [`base16-tomorrow-night-256.itermcolors`](https://github.com/martinlindhe/base16-iterm2/blob/master/itermcolors/base16-tomorrow-night-256.itermcolors)
+    + You can find some fantastic Base16 iTerm2 colors schemes here on Github: [base16-iterm2](https://github.com/martinlindhe/base16-iterm2)
 - Plugin architecture to add your own ANSI Parser
 - Built-in default colors (HTML Color Names)
 - Custom user-defined colors

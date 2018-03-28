@@ -26,7 +26,6 @@
 		"align-text": "^1.0.2",
 		"ansi-regex": "^3.0.0",
 		"array-uniq": "^1.0.3",
-		"canvas": "^1.6.10",
 		"deepmerge": "^2.1.0",
 		"itermcolors-to-hex": "^1.0.1",
 		"super-split": "^1.1.0"
