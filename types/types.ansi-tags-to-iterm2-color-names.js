@@ -1,0 +1,42 @@
+module.exports = {
+	black: 'Ansi 0 Color',
+	red: 'Ansi 1 Color',
+	green: 'Ansi 2 Color',
+	yellow: 'Ansi 3 Color',
+	blue: 'Ansi 4 Color',
+	magenta: 'Ansi 5 Color',
+	cyan: 'Ansi 6 Color',
+	white: 'Ansi 7 Color',
+
+	gray: 'Ansi 8 Color',
+	blackBright: 'Ansi 8 Color',
+	redBright: 'Ansi 9 Color',
+	greenBright: 'Ansi 10 Color',
+	yellowBright: 'Ansi 11 Color',
+	blueBright: 'Ansi 12 Color',
+	magentaBright: 'Ansi 13 Color',
+	cyanBright: 'Ansi 14 Color',
+	whiteBright: 'Ansi 15 Color',
+
+	bgBlack: 'Ansi 0 Color',
+	bgRed: 'Ansi 1 Color',
+	bgGreen: 'Ansi 2 Color',
+	bgYellow: 'Ansi 3 Color',
+	bgBlue: 'Ansi 4 Color',
+	bgMagenta: 'Ansi 5 Color',
+	bgCyan: 'Ansi 6 Color',
+	bgWhite: 'Ansi 7 Color',
+
+	bgGray: 'Ansi 8 Color',
+	bgBlackBright: 'Ansi 8 Color',
+	bgRedBright: 'Ansi 9 Color',
+	bgGreenBright: 'Ansi 10 Color',
+	bgYellowBright: 'Ansi 11 Color',
+	bgBlueBright: 'Ansi 12 Color',
+	bgMagentaBright: 'Ansi 13 Color',
+	bgCyanBright: 'Ansi 14 Color',
+	bgWhiteBright: 'Ansi 15 Color',
+
+	backgroundColor: 'Background Color',
+	foregroundColor: 'Foreground Color'
+}
