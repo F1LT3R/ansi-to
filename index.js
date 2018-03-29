@@ -20,6 +20,32 @@ const atomize = text => {
 const parse = (ansi, plugin, opts) => {
 	const {ansies, words} = atomize(ansi)
 
+	const stack = {
+		fgCol: [],
+		bgCol: [],
+		boldDim: [],
+		italic: false,
+		underline: false,
+		inverse: false,
+		hidden: false,
+		strikethrough: false
+	}
+
+	const state = {
+		fgCol: () => {
+			if (stack.fgCol.length > 0) {
+				return stack.fgCol[stack.fgCol.length - 1]
+			}
+			return opts.colors.foregroundColor
+		},
+		bgCol: () => {
+			if (stack.bgCol.length > 0) {
+				return stack.bgCol[stack.bgCol.length - 1]
+			}
+			return 'rgba(0, 0, 0, 0)'
+		}
+	}
+
 	let x = 0
 	let y = 0
 
@@ -37,10 +63,9 @@ const parse = (ansi, plugin, opts) => {
 
 		// Send normal (non-ANSI) strings to the decorator
 		if (ansies.includes(word) === false) {
-			const text = word
-			const data = {x, y, text}
+			const data = {text: word, x, y, state, stack}
 			plugin.decorate('text', data)
-			x += text.length
+			x += word.length
 			return
 		}
 
@@ -49,7 +74,68 @@ const parse = (ansi, plugin, opts) => {
 		const decorator = types.decorators[ansiTag]
 		const color = opts.colors[ansiTag]
 
-		const data = {x, y, color}
+		if (decorator === 'foregroundColorOpen') {
+			stack.fgCol.push(color)
+		}
+
+		if (decorator === 'foregroundColorClose') {
+			stack.fgCol.pop()
+		}
+
+		if (decorator === 'backgroundColorOpen') {
+			stack.bgCol.push(color)
+		}
+
+		if (decorator === 'backgroundColorClose') {
+			stack.bgCol.pop()
+		}
+
+		if (decorator === 'boldOpen') {
+			stack.boldDim.push('bold')
+		}
+
+		if (decorator === 'dimOpen') {
+			stack.boldDim.push('dim')
+		}
+
+		if (decorator === 'boldDimClose') {
+			stack.boldDim.pop()
+		}
+
+		if (decorator === 'italicOpen') {
+			stack.italic = true
+		}
+
+		if (decorator === 'italicClose') {
+			stack.italic = false
+		}
+
+		if (decorator === 'underlineOpen') {
+			stack.underline = true
+		}
+
+		if (decorator === 'underlineClose') {
+			stack.underline = false
+		}
+
+		if (decorator === 'inverseOpen') {
+			stack.inverse = true
+		}
+
+		if (decorator === 'inverseClose') {
+			stack.inverse = false
+		}
+
+		if (decorator === 'strikethroughOpen') {
+			stack.strikethrough = true
+		}
+
+		if (decorator === 'strikethroughClose') {
+			stack.strikethrough = false
+		}
+
+		const data = {x, y, color, ansiTag}
+
 		plugin.decorate(decorator, data)
 	})
 

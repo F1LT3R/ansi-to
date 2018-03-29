@@ -35,8 +35,8 @@ const types = {
 	bgCyanBright: 'backgroundColorOpen',
 	bgWhiteBright: 'backgroundColorOpen',
 
-	foregroundClose: 'backgroundColorClose',
-	backgroundClose: 'backgroundColorClose',
+	foregroundColorClose: 'foregroundColorClose',
+	backgroundColorClose: 'backgroundColorClose',
 
 	boldOpen: 'boldOpen',
 	dimOpen: 'dimOpen',

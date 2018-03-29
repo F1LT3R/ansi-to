@@ -18,7 +18,7 @@ module.exports = {
 	'\u001b[96m': 'cyanBright',
 	'\u001b[97m': 'whiteBright',
 
-	'\u001b[39m': 'foregroundClose',
+	'\u001b[39m': 'foregroundColorClose',
 
 	'\u001b[40m': 'bgBlack',
 	'\u001b[41m': 'bgRed',
@@ -37,7 +37,7 @@ module.exports = {
 	'\u001b[106m': 'bgCyanBright',
 	'\u001b[107m': 'bgWhiteBright',
 
-	'\u001b[49m': 'backgroundClose',
+	'\u001b[49m': 'backgroundColorClose',
 
 	'\u001b[1m': 'boldOpen',
 	'\u001b[2m': 'dimOpen',

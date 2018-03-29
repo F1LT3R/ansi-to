@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 40"><g fill="LightGray"><text x="0" y="0" font-family="Courier" font-size="12px">Your </text>
+<g style="fill: FireBrick">
+<text x="60" y="0" font-family="Courier" font-size="12px">wish</text>
+</g>
+<text x="108" y="0" font-family="Courier" font-size="12px"> is </text>
+<g style="fill: GoldenRod">
+<text x="156" y="0" font-family="Courier" font-size="12px">my</text>
+</g>
+<text x="180" y="0" font-family="Courier" font-size="12px"> command.</text>
+</g></svg>
