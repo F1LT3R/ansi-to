@@ -1,4 +1,9 @@
-const htmlColorNames = {
+const fs = require('fs')
+const path = require('path')
+
+const htmlColors = require('html-colors')
+
+const ansiHtmlColorTable = {
 	black: 'Black',
 	red: 'FireBrick',
 	green: 'LimeGreen',
@@ -35,8 +40,16 @@ const htmlColorNames = {
 	bgCyanBright: 'Cyan',
 	bgWhiteBright: 'White',
 
-	backgroundColor: 'rgba(0, 0, 0, 0.75)',
+	backgroundColor: 'Black',
 	foregroundColor: 'LightGray'
 }
 
-module.exports = htmlColorNames
+const colorMap = {}
+
+Object.entries(ansiHtmlColorTable).forEach(([ansiTag, htmlColorName]) => {
+	colorMap[ansiTag] = htmlColors.hex(htmlColorName.toLowerCase())
+})
+
+const outfile = 'ansi-tag-html-colors-as-hex.json'
+const outfilePath = path.join(__dirname, outfile)
+fs.writeFileSync(outfilePath, JSON.stringify(colorMap, null, 4))

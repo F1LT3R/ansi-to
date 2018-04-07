@@ -1,40 +1,125 @@
-import fs from 'fs'
 import test from 'ava'
-// Later: import chalk from 'chalk'
 
 import ansiTo from '.'
 
-const fixtures = {
-	chalkStylesAnsi: fs.readFileSync('./fixtures/fixture.chalk-styles.ansi').toString()
-}
+const defaultColors = require('./colors/ansi-tag-html-colors-as-hex.json')
 
-test('itermcolors-f1lt3r-dark-256', t => {
-	const colors = ansiTo.load.iTerm2Colors('./colors/base16-flat-dark-f1lt3r-256.itermcolors')
-	const opts = {colors}
-	const result = ansiTo.html(fixtures.chalkStylesAnsi, opts)
-	t.is(result, '<pre style="color: #e0e0e0; background-color: #2c3e50"><code><span style="font-weight: bold">bold            </span> <span style="opacity: 0.5">dim             </span> <i>italic          </i> <span style="text-decoration: underline">underline       </span> inverse          <strike>strikethrough   </strike> <br><span style="font-weight: bold"><span style="color: #2c3e50">black           </span></span> <span style="font-weight: bold"><span style="color: #ce4435">red             </span></span> <span style="font-weight: bold"><span style="color: #2ecc71">green           </span></span> <span style="font-weight: bold"><span style="color: #e9bd0e">yellow          </span></span> <span style="font-weight: bold"><span style="color: #318fce">blue            </span></span> <span style="font-weight: bold"><span style="color: #9b59b6">magenta         </span></span> <span style="font-weight: bold"><span style="color: #1abc9c">cyan            </span></span> <span style="font-weight: bold"><span style="color: #e0e0e0">white           </span></span> <br><span style="font-weight: bold"><span style="color: #758283">gray            </span></span> <span style="color: #2c3e50"><span style="color: #ff5342">redBright       <span style="color: #2c3e50"></span> <span style="color: #2c3e50"><span style="color: #39ff8d">greenBright     <span style="color: #2c3e50"></span> <span style="color: #2c3e50"><span style="color: #fedb00">yellowBright    <span style="color: #2c3e50"></span> <span style="color: #2c3e50"><span style="color: #0098ff">blueBright      <span style="color: #2c3e50"></span> <span style="color: #2c3e50"><span style="color: #e500ff">magentaBright   <span style="color: #2c3e50"></span> <span style="color: #2c3e50"><span style="color: #00ffcc">cyanBright      <span style="color: #2c3e50"></span> <span style="color: #2c3e50"><span style="color: #f9fdff">whiteBright     <span style="color: #2c3e50"></span> <br><span style="color: #e0e0e0"><span style="font-weight: bold"><span style="background-color: #2c3e50">bgBlack         </span></span></span> <span style="color: #2c3e50"><span style="font-weight: bold"><span style="background-color: #ce4435">bgRed           </span></span></span> <span style="color: #2c3e50"><span style="font-weight: bold"><span style="background-color: #2ecc71">bgGreen         </span></span></span> <span style="color: #2c3e50"><span style="font-weight: bold"><span style="background-color: #e9bd0e">bgYellow        </span></span></span> <span style="color: #2c3e50"><span style="font-weight: bold"><span style="background-color: #318fce">bgBlue          </span></span></span> <span style="color: #2c3e50"><span style="font-weight: bold"><span style="background-color: #9b59b6">bgMagenta       </span></span></span> <span style="color: #2c3e50"><span style="font-weight: bold"><span style="background-color: #1abc9c">bgCyan          </span></span></span> <span style="color: #2c3e50"><span style="font-weight: bold"><span style="background-color: #e0e0e0">bgWhite         </span></span></span> <br><span style="color: #e0e0e0"><i>bgBlackBright   </span></i></span> <span style="color: #2c3e50"><i><span style="background-color: #ff5342">bgRedBright     </span></i></span> <span style="color: #2c3e50"><i><span style="background-color: #39ff8d">bgGreenBright   </span></i></span> <span style="color: #2c3e50"><i><span style="background-color: #fedb00">bgYellowBright  </span></i></span> <span style="color: #2c3e50"><i><span style="background-color: #0098ff">bgBlueBright    </span></i></span> <span style="color: #2c3e50"><i><span style="background-color: #e500ff">bgMagentaBright </span></i></span> <span style="color: #2c3e50"><i><span style="background-color: #00ffcc">bgCyanBright    </span></i></span> <span style="color: #2c3e50"><i><span style="background-color: #f9fdff">bgWhiteBright   </span></i></span> <br></code></pre>')
-	fs.writeFileSync('./examples/itermcolors-f1lt3r-dark-256.html', result)
+test('Plugin can load, override opts, and get ansi chunks', t => {
+	const MyPlugin = {
+		name: 'myplugin',
+		handler: (ansi, opts) => {
+			return {ansi, opts}
+		},
+		opts: {
+			myOpt1: 1337,
+			myOpt2: 'foo'
+		}
+	}
+
+	const handler = ansiTo.plugin(MyPlugin)
+	t.is(typeof handler, 'function')
+
+	const result = handler('abcd', {myOpt2: 'bar'})
+	t.deepEqual(result, {
+		ansi: {
+			raw: 'abcd',
+			textArea: {columns: 4, rows: 1},
+			plainText: 'abcd',
+			chunks: [{
+				type: 'text',
+				value: 'abcd',
+				position: {x: 0, y: 0, n: 0, raw: 0},
+				style: {}
+			}]
+		},
+		opts: {
+			myOpt1: 1337,
+			myOpt2: 'bar',
+			colors: defaultColors
+		}
+	})
 })
 
-// Later
-// test('ansiTo SVG', t => {
-// 	const ansiText = chalk`Your {red wish} is {yellow my} command.`
-// 	const result = ansiTo.svg(ansiText)
-// 	// const result = ansiTo.svg(fixtures.chalkStylesAnsi)
-// 	// console.log(result)
-// 	// t.is(result, '<pre style="color: #e0e0e0; background-color: #2c3e50"><code><span style="font-weight: bold">bold            </span> <span style="opacity: 0.5">dim             </span> <i>italic          </i> <span style="text-decoration: underline">underline       </span> inverse          <strike>strikethrough   </strike> <br><span style="font-weight: bold"><span style="color: #2c3e50">black           </span></span> <span style="font-weight: bold"><span style="color: #ce4435">red             </span></span> <span style="font-weight: bold"><span style="color: #2ecc71">green           </span></span> <span style="font-weight: bold"><span style="color: #e9bd0e">yellow          </span></span> <span style="font-weight: bold"><span style="color: #318fce">blue            </span></span> <span style="font-weight: bold"><span style="color: #9b59b6">magenta         </span></span> <span style="font-weight: bold"><span style="color: #1abc9c">cyan            </span></span> <span style="font-weight: bold"><span style="color: #e0e0e0">white           </span></span> <br><span style="font-weight: bold"><span style="color: #758283">gray            </span></span> <span style="color: #2c3e50"><span style="color: #ff5342">redBright       <span style="color: #2c3e50"></span> <span style="color: #2c3e50"><span style="color: #39ff8d">greenBright     <span style="color: #2c3e50"></span> <span style="color: #2c3e50"><span style="color: #fedb00">yellowBright    <span style="color: #2c3e50"></span> <span style="color: #2c3e50"><span style="color: #0098ff">blueBright      <span style="color: #2c3e50"></span> <span style="color: #2c3e50"><span style="color: #e500ff">magentaBright   <span style="color: #2c3e50"></span> <span style="color: #2c3e50"><span style="color: #00ffcc">cyanBright      <span style="color: #2c3e50"></span> <span style="color: #2c3e50"><span style="color: #f9fdff">whiteBright     <span style="color: #2c3e50"></span> <br><span style="color: #e0e0e0"><span style="font-weight: bold"><span style="background-color: #2c3e50">bgBlack         </span></span></span> <span style="color: #2c3e50"><span style="font-weight: bold"><span style="background-color: #ce4435">bgRed           </span></span></span> <span style="color: #2c3e50"><span style="font-weight: bold"><span style="background-color: #2ecc71">bgGreen         </span></span></span> <span style="color: #2c3e50"><span style="font-weight: bold"><span style="background-color: #e9bd0e">bgYellow        </span></span></span> <span style="color: #2c3e50"><span style="font-weight: bold"><span style="background-color: #318fce">bgBlue          </span></span></span> <span style="color: #2c3e50"><span style="font-weight: bold"><span style="background-color: #9b59b6">bgMagenta       </span></span></span> <span style="color: #2c3e50"><span style="font-weight: bold"><span style="background-color: #1abc9c">bgCyan          </span></span></span> <span style="color: #2c3e50"><span style="font-weight: bold"><span style="background-color: #e0e0e0">bgWhite         </span></span></span> <br><span style="color: #e0e0e0"><i>bgBlackBright   </span></i></span> <span style="color: #2c3e50"><i><span style="background-color: #ff5342">bgRedBright     </span></i></span> <span style="color: #2c3e50"><i><span style="background-color: #39ff8d">bgGreenBright   </span></i></span> <span style="color: #2c3e50"><i><span style="background-color: #fedb00">bgYellowBright  </span></i></span> <span style="color: #2c3e50"><i><span style="background-color: #0098ff">bgBlueBright    </span></i></span> <span style="color: #2c3e50"><i><span style="background-color: #e500ff">bgMagentaBright </span></i></span> <span style="color: #2c3e50"><i><span style="background-color: #00ffcc">bgCyanBright    </span></i></span> <span style="color: #2c3e50"><i><span style="background-color: #f9fdff">bgWhiteBright   </span></i></span> <br></code></pre>')
-// 	fs.writeFileSync('./examples/ansi-to-svg.svg', result)
-// })
+test('Loads iTerm2Colors', t => {
+	const colors = ansiTo.load.iTerm2Colors('./colors/base16-flat-dark-f1lt3r-256.itermcolors')
+	t.deepEqual(colors, {
+		black: '#2c3e50',
+		red: '#ce4435',
+		green: '#2ecc71',
+		yellow: '#e9bd0e',
+		blue: '#318fce',
+		magenta: '#9b59b6',
+		cyan: '#1abc9c',
+		white: '#e0e0e0',
+		gray: '#758283',
+		blackBright: '#758283',
+		redBright: '#ff5342',
+		greenBright: '#39ff8d',
+		yellowBright: '#fedb00',
+		blueBright: '#0098ff',
+		magentaBright: '#e500ff',
+		cyanBright: '#00ffcc',
+		whiteBright: '#f9fdff',
+		bgBlack: '#2c3e50',
+		bgRed: '#ce4435',
+		bgGreen: '#2ecc71',
+		bgYellow: '#e9bd0e',
+		bgBlue: '#318fce',
+		bgMagenta: '#9b59b6',
+		bgCyan: '#1abc9c',
+		bgWhite: '#e0e0e0',
+		bgGray: '#758283',
+		bgBlackBright: '#758283',
+		bgRedBright: '#ff5342',
+		bgGreenBright: '#39ff8d',
+		bgYellowBright: '#fedb00',
+		bgBlueBright: '#0098ff',
+		bgMagentaBright: '#e500ff',
+		bgCyanBright: '#00ffcc',
+		bgWhiteBright: '#f9fdff',
+		backgroundColor: '#2c3e50',
+		foregroundColor: '#e0e0e0'
+	})
+})
 
-// Later
-// test('ansiTo Image', t => {
-// 	const ansiText = chalk`Your {red wish} is {bgYellow my} command.`
-// 	const colors = ansiTo.load.iTerm2Colors('./colors/base16-flat-dark-f1lt3r-256.itermcolors')
-// 	const opts = {colors}
-// 	console.log(JSON.stringify(ansiText))
-// 	const result = ansiTo.image(ansiText, opts)
-// 	console.log('\u001b]1337;File=inline=1:' + result.substr(22) + '\u0007')
-// 	// console.log(result)
-// 	// t.is(result, '<pre style="color: #e0e0e0; background-color: #2c3e50"><code><span style="font-weight: bold">bold            </span> <span style="opacity: 0.5">dim             </span> <i>italic          </i> <span style="text-decoration: underline">underline       </span> inverse          <strike>strikethrough   </strike> <br><span style="font-weight: bold"><span style="color: #2c3e50">black           </span></span> <span style="font-weight: bold"><span style="color: #ce4435">red             </span></span> <span style="font-weight: bold"><span style="color: #2ecc71">green           </span></span> <span style="font-weight: bold"><span style="color: #e9bd0e">yellow          </span></span> <span style="font-weight: bold"><span style="color: #318fce">blue            </span></span> <span style="font-weight: bold"><span style="color: #9b59b6">magenta         </span></span> <span style="font-weight: bold"><span style="color: #1abc9c">cyan            </span></span> <span style="font-weight: bold"><span style="color: #e0e0e0">white           </span></span> <br><span style="font-weight: bold"><span style="color: #758283">gray            </span></span> <span style="color: #2c3e50"><span style="color: #ff5342">redBright       <span style="color: #2c3e50"></span> <span style="color: #2c3e50"><span style="color: #39ff8d">greenBright     <span style="color: #2c3e50"></span> <span style="color: #2c3e50"><span style="color: #fedb00">yellowBright    <span style="color: #2c3e50"></span> <span style="color: #2c3e50"><span style="color: #0098ff">blueBright      <span style="color: #2c3e50"></span> <span style="color: #2c3e50"><span style="color: #e500ff">magentaBright   <span style="color: #2c3e50"></span> <span style="color: #2c3e50"><span style="color: #00ffcc">cyanBright      <span style="color: #2c3e50"></span> <span style="color: #2c3e50"><span style="color: #f9fdff">whiteBright     <span style="color: #2c3e50"></span> <br><span style="color: #e0e0e0"><span style="font-weight: bold"><span style="background-color: #2c3e50">bgBlack         </span></span></span> <span style="color: #2c3e50"><span style="font-weight: bold"><span style="background-color: #ce4435">bgRed           </span></span></span> <span style="color: #2c3e50"><span style="font-weight: bold"><span style="background-color: #2ecc71">bgGreen         </span></span></span> <span style="color: #2c3e50"><span style="font-weight: bold"><span style="background-color: #e9bd0e">bgYellow        </span></span></span> <span style="color: #2c3e50"><span style="font-weight: bold"><span style="background-color: #318fce">bgBlue          </span></span></span> <span style="color: #2c3e50"><span style="font-weight: bold"><span style="background-color: #9b59b6">bgMagenta       </span></span></span> <span style="color: #2c3e50"><span style="font-weight: bold"><span style="background-color: #1abc9c">bgCyan          </span></span></span> <span style="color: #2c3e50"><span style="font-weight: bold"><span style="background-color: #e0e0e0">bgWhite         </span></span></span> <br><span style="color: #e0e0e0"><i>bgBlackBright   </span></i></span> <span style="color: #2c3e50"><i><span style="background-color: #ff5342">bgRedBright     </span></i></span> <span style="color: #2c3e50"><i><span style="background-color: #39ff8d">bgGreenBright   </span></i></span> <span style="color: #2c3e50"><i><span style="background-color: #fedb00">bgYellowBright  </span></i></span> <span style="color: #2c3e50"><i><span style="background-color: #0098ff">bgBlueBright    </span></i></span> <span style="color: #2c3e50"><i><span style="background-color: #e500ff">bgMagentaBright </span></i></span> <span style="color: #2c3e50"><i><span style="background-color: #00ffcc">bgCyanBright    </span></i></span> <span style="color: #2c3e50"><i><span style="background-color: #f9fdff">bgWhiteBright   </span></i></span> <br></code></pre>')
-// 	// fs.writeFileSync('./examples/ansi-to-svg.svg', result)
-// })
+test('Can load color string', t => {
+	const colors = ansiTo.load.iTerm2Colors('./colors/base16-flat-dark-f1lt3r-256.itermcolors')
+	t.deepEqual(colors, {
+		black: '#2c3e50',
+		red: '#ce4435',
+		green: '#2ecc71',
+		yellow: '#e9bd0e',
+		blue: '#318fce',
+		magenta: '#9b59b6',
+		cyan: '#1abc9c',
+		white: '#e0e0e0',
+		gray: '#758283',
+		blackBright: '#758283',
+		redBright: '#ff5342',
+		greenBright: '#39ff8d',
+		yellowBright: '#fedb00',
+		blueBright: '#0098ff',
+		magentaBright: '#e500ff',
+		cyanBright: '#00ffcc',
+		whiteBright: '#f9fdff',
+		bgBlack: '#2c3e50',
+		bgRed: '#ce4435',
+		bgGreen: '#2ecc71',
+		bgYellow: '#e9bd0e',
+		bgBlue: '#318fce',
+		bgMagenta: '#9b59b6',
+		bgCyan: '#1abc9c',
+		bgWhite: '#e0e0e0',
+		bgGray: '#758283',
+		bgBlackBright: '#758283',
+		bgRedBright: '#ff5342',
+		bgGreenBright: '#39ff8d',
+		bgYellowBright: '#fedb00',
+		bgBlueBright: '#0098ff',
+		bgMagentaBright: '#e500ff',
+		bgCyanBright: '#00ffcc',
+		bgWhiteBright: '#f9fdff',
+		backgroundColor: '#2c3e50',
+		foregroundColor: '#e0e0e0'
+	})
+})

@@ -1,6 +1,6 @@
 # ANSI-to
 
-> 😹  export ANSI color strings to HTML, Image w/ iTerm2 color support
+> 😹  export ANSI color strings to various formats: HTML, SVG, PNG.
 
 [![Lead Image](examples/ansi-to-html-lead-image-example-zoomed.png)](examples/ansi-to-html-lead-image-example-zoomed.png)
 
@@ -9,69 +9,28 @@
 [![NPM Version](https://img.shields.io/npm/v/ansi-to.svg)](https://www.npmjs.com/package/ansi-to)
 [![XO code style](https://img.shields.io/badge/code_style-XO-5ed9c7.svg)](https://github.com/sindresorhus/xo)
 
-**Features:**
+## Features
 
-- Convert to partial HTML for your blog
-- Convert to Image for your README.md
+ANSI-to takes a string of ANSI and converts it to various types of output using the following plugins:
+
+    - [HTML](https://github.com.F1LT3R/ansi-to-html)
+    - [SVG](https://github.com.F1LT3R/ansi-to-svg)
+    - [PNG](https://github.com.F1LT3R/ansi-to-png)
+
+Important: Do not use ANSI-to directly. Please use one of the above plugins.
+
+**General Features**
+
+- iTerm2 color support - [Base16 iTerm2 Color Schemes](https://github.com/martinlindhe/base16-iterm2)
+- Use output in your `README.md` files
 - Designed for use with [Chalk](https://github.com/chalk/chalk)
-- iTerm2 Preset support 
-    + Eg: ANSI-to can load [`base16-tomorrow-night-256.itermcolors`](https://github.com/martinlindhe/base16-iterm2/blob/master/itermcolors/base16-tomorrow-night-256.itermcolors)
-    + You can find some fantastic Base16 iTerm2 colors schemes here on Github: [base16-iterm2](https://github.com/martinlindhe/base16-iterm2)
-- Plugin architecture to add your own ANSI Parser
-- Built-in default colors (HTML Color Names)
-- Custom user-defined colors
-- Custom user-defined container templates
+- Plugin architecture to build-your-own ANSI Parser
+- Built-in default colors
+- User can override colors
+- Emoji support
+- Powerline font support
 
+## Why ANSI-to ?
 
-## ANSI-to ... HTML
-
-```js
-const ansiTo = require('ansi-to')
-const chalk = require('chalk')
-
-const chalked = chalk`{red Foo} {yellow Bar} {green Baz} {blue Qux} {bgMagentaBright  WOMBAT! }`
-console.log(chalked)
-
-const html = ansiTo.html(chalked)
-console.log(html)
-```
-
-Console Output:
-
-![Figure 01 Console](examples/figure-01-console.png)
-
-Browser Screenshot:
-
-![Figure 01 Browser Screenshot](examples/figure-01-browser.png)
-
-## ANSI-to.load.iTerm2Colors
-
-```js
-const ansiTo = require('ansi-to')
-const chalk = require('chalk')
-
-const chalked = chalk`{red Foo} {yellow Bar} {green Baz} {blue Qux} {bgMagentaBright  WOMBAT! }`
-console.log(chalked)
-
-const iTerm2Colors = ansiTo.load.iTerm2Colors('./base16-flat-dark-f1lt3r-256.itermcolors')
-
-const html = ansiTo.html(chalked, {colors: iTerm2Colors})
-console.log(html)
-```
-
-Console Output:
-
-![Figure 02 Console](examples/figure-02-console.png)
-
-Browser Screenshot:
-
-![Figure 02 Browser Screenshot](examples/figure-02-browser.png)
-
-
-
-## Install
-
-```
-$ yarn add ansi-to
-```
+ANSI-to is designed for use with ZTD development (Zero Technical Debt). ANSI-to provides a Markdown friendly way to include CLI output in your software documentation.
 

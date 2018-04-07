@@ -1,10 +1,12 @@
 const decorators = {
-	text: ({text}) => text,
+	text: text => text,
 
-	foregroundColorOpen: ({color}) => `<span style="color: ${color}">`,
+	foregroundColorOpen: color =>
+		`<span style="color: ${color}">`,
 	foregroundColorClose: '</span>',
 
-	backgroundColorOpen: ({color}) => `<span style="background-color: ${color}">`,
+	backgroundColorOpen: color =>
+		`<span style="background-color: ${color}">`,
 	backgroundColorClose: '</span>',
 
 	boldOpen: '<span style="font-weight: bold">',
@@ -27,53 +29,53 @@ const decorators = {
 	inverseClose: '',
 
 	reset: '',
-	linebreak: '<br>',
+	newline: '<br>',
 
-	container: ({foregroundColor, backgroundColor, content}) => {
-		return `<pre style="color: ${foregroundColor}; background-color: ${backgroundColor}"><code>${content}</code></pre>`
+	container: (content, opts) => {
+		return `<pre style="color: ${opts.colors.foregroundColor}; background-color: ${opts.colors.backgroundColor}"><code>${content}</code></pre>`
 	}
 }
 
-class Decorator {
-	constructor (opts) {
-		this.opts = opts
-	}
+const handler = (ansi, opts) => {
+	let content = ''
 
-	start () {
-		this.content = ''
-	}
+	ansi.chunks.forEach(chunk => {
+		if (chunk.type === 'ansi') {
+			const {
+				tag,
+				decorator
+			} = chunk.value
 
-	decorate (name, data) {
-		if (!Reflect.has(decorators, name)) {
-			return false
-		}
+			const dec = decorators[decorator]
 
-		if (typeof decorators[name] === 'string') {
-			this.content += decorators[name]
+			if (typeof dec === 'string') {
+				content += dec
+				return
+			}
+
+			content += dec(opts.colors[tag])
 			return
 		}
 
-		this.content += decorators[name](data)
-	}
-
-	end () {
-		const data = {
-			foregroundColor: this.opts.colors.foregroundColor,
-			backgroundColor: this.opts.colors.backgroundColor,
-			content: this.content
+		if (chunk.type === 'text') {
+			content += decorators.text(chunk.value)
+			return
 		}
 
-		const output = decorators.container(data)
-		const reLink = /(https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_+.~#?&//=]*))/g
-		const final = output.replace(reLink, '<a style="color: inherit" href="$1">$1</a>')
-		return final
-	}
+		if (chunk.type === 'newline') {
+			content += decorators.newline
+		}
+	})
+
+	const output = decorators.container(content, opts)
+	const reLink = /(https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_+.~#?&//=]*))/g
+	const final = output.replace(reLink, '<a style="color: inherit" href="$1">$1</a>')
+	return final
 }
 
-const plugin = {
-	init: opts => {
-		return new Decorator(opts)
-	}
+const Plugin = {
+	name: 'html',
+	handler
 }
 
-module.exports = ansiTo => ansiTo('html', plugin)
+module.exports = ansiTo => ansiTo(Plugin)

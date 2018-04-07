@@ -1,103 +1,165 @@
 const canvas = require('canvas')
 
-class Decorator {
-	constructor (opts) {
-		this.opts = opts
+// Returns: size {
+//     width: 8.4013671875,
+//     actualBoundingBoxLeft: 0,
+//     actualBoundingBoxRight: 8.4013671875,
+//     actualBoundingBoxAscent: 8.107421875,
+//     actualBoundingBoxDescent: 0,
+//     emHeightAscent: 10.5546875,
+//     emHeightDescent: 3.4453125,
+//     alphabeticBaseline: -0
+// }
+
+const meassureFontChar = font => {
+	const _canvas = canvas.createCanvas(0, 0)
+	const _ctx = _canvas.getContext('2d')
+	_ctx.font = font.bold
+	const size = _ctx.measureText('M')
+	return size
+}
+
+const handler = (ansi, opts) => {
+	const {
+		fontSize,
+		fontFace,
+		scale
+	} = opts
+
+	const font = {
+		regular: `${fontSize}px ${fontFace}`,
+		bold: `bold ${fontSize}px ${fontFace}`,
+		italic: `italic ${fontSize}px ${fontFace}`,
+		boldItalic: `bold italic ${fontSize}px ${fontFace}`
 	}
 
-	start () {
-		this.content = ''
-		this.canvas = canvas.createCanvas(2440, 180)
-		this.ctx = this.canvas.getContext('2d')
-		this.ctx.antialias = 'subpixel'
-		this.fontSize = 15
+	const size = meassureFontChar(font)
 
-		// Restore later
-		// this.ctx.fillStyle = this.opts.colors.backgroundColor
-		this.ctx.fillStyle = 'rgba(0,0,0,0.75)'
+	font.size = size
+	font.width = size.width
+	font.height = size.emHeightAscent + size.emHeightDescent
 
-		this.font = {
-			regular: `${this.fontSize}px Courier`,
-			bold: `bold ${this.fontSize}px Courier`,
-			italic: `italic ${this.fontSize}px Courier`,
-			boldItalic: `bold italic ${this.fontSize}px Courier`
-		}
+	const textArea = ansi.textArea
+	const textAreaWidth = textArea.columns * font.width
+	const textAreaHeight = textArea.rows * font.height
 
-		this.ctx.font = this.font.regular
+	const width = opts.paddingLeft + textAreaWidth + opts.paddingRight
+	const height = opts.paddingTop + textAreaHeight + opts.paddingBottom
+	const totalWidth = width * scale
+	const totalHeight = height * scale
 
-		this.textWidth = Math.round(this.ctx.measureText('W').width)
-		this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height)
-		this.ctx.translate(0, this.fontSize * 2)
-		this.ctx.scale(2, 2)
-	}
+	const _canvas = canvas.createCanvas(totalWidth, totalHeight)
+	const ctx = _canvas.getContext('2d')
+	ctx.fillStyle = opts.colors.backgroundColor
+	ctx.fillRect(0, 0, _canvas.width, _canvas.height)
+	ctx.scale(scale, scale)
 
-	decorate (name, data) {
-		if (name !== 'text') {
+	// Offset the position by font size and padding
+	// font.size.emHeightDescent
+	const offsetTop = opts.paddingTop +
+		font.size.emHeightAscent
+
+	const offsetLeft = opts.paddingLeft
+	ctx.translate(offsetLeft, offsetTop)
+
+	ansi.chunks.forEach(chunk => {
+		const {
+			type,
+			value,
+			position,
+			style
+		} = chunk
+
+		if (type !== 'text') {
 			return
 		}
 
-		const x = data.x * this.textWidth
-		const y = data.y + (this.fontSize * data.y)
-		const w = this.textWidth * data.text.length
+		const x = position.x * font.width
+		const y = position.y + (font.height * position.y)
+		const w = font.width * value.length
 
-		if (data.stack.boldDim.includes('bold')) {
-			this.ctx.font = this.font.bold
+		if (style.bold) {
+			ctx.font = font.bold
 		} else {
-			this.ctx.font = this.font.regular
+			ctx.font = font.regular
 		}
 
-		if (data.stack.italic) {
-			this.ctx.font = this.font.italic
+		if (style.italic) {
+			ctx.font = font.italic
 		}
 
-		if (data.stack.italic && data.stack.boldDim.includes('bold')) {
-			this.ctx.font = this.font.boldItalic
+		if (style.italic && style.bold) {
+			ctx.font = font.boldItalic
 		}
 
-		this.ctx.fillStyle = data.state.bgCol()
-		this.ctx.fillRect(x, y - (this.fontSize * 0.8), w, this.fontSize + 1)
-
-		if (data.stack.boldDim.includes('dim')) {
-			this.ctx.globalAlpha = 0.5
+		if (style.dim) {
+			ctx.globalAlpha = 0.5
 		} else {
-			this.ctx.globalAlpha = 1
+			ctx.globalAlpha = 1
 		}
 
-		this.ctx.fillStyle = data.state.fgCol()
-		this.ctx.fillText(data.text, x, y)
-
-		this.ctx.strokeStyle = this.ctx.fillStyle
-
-		const underlineOffset = y + (this.fontSize * 0.2)
-
-		if (data.stack.underline) {
-			this.ctx.beginPath()
-			this.ctx.moveTo(x, y + underlineOffset)
-			this.ctx.lineTo(x + w, y + underlineOffset)
-			this.ctx.closePath()
-			this.ctx.stroke()
+		if (style.backgroundColor) {
+			ctx.fillStyle = opts.colors[style.backgroundColor]
+			ctx.fillRect(x, y - (font.height * 0.8), w, font.height + 1)
 		}
 
-		const strikethroughOffset = y - (this.fontSize * 0.3)
-
-		if (data.stack.strikethrough) {
-			this.ctx.beginPath()
-			this.ctx.moveTo(x, y + strikethroughOffset)
-			this.ctx.lineTo(x + w, y + strikethroughOffset)
-			this.ctx.closePath()
-			this.ctx.stroke()
+		if (style.backgroundColor) {
+			ctx.fillStyle = opts.colors[style.backgroundColor]
+			ctx.fillRect(x, y - (font.height * 0.8), w, font.height + 1)
 		}
-	}
 
-	end () {
-		return this.canvas.toDataURL()
+		ctx.fillStyle = opts.colors.foregroundColor
+
+		if (style.foregroundColor) {
+			ctx.fillStyle = opts.colors[style.foregroundColor]
+		}
+
+		ctx.fillText(value, x, y)
+
+		ctx.strokeStyle = ctx.fillStyle
+
+		if (style.underline) {
+			const underlineOffset = y + (font.height * 0.2)
+			ctx.beginPath()
+			ctx.moveTo(x, y + underlineOffset)
+			ctx.lineTo(x + w, y + underlineOffset)
+			ctx.closePath()
+			ctx.stroke()
+		}
+
+		if (style.strikethrough) {
+			const strikethroughOffset = y - (font.height * 0.3)
+			ctx.beginPath()
+			ctx.moveTo(x, y + strikethroughOffset)
+			ctx.lineTo(x + w, y + strikethroughOffset)
+			ctx.closePath()
+			ctx.stroke()
+		}
+	})
+
+	const data = _canvas.toDataURL()
+	return data
+}
+
+const Plugin = {
+	name: 'image',
+	handler,
+	opts: {
+		// FontSize: px
+		fontSize: 14,
+
+		// FontFace: (use monospace fonts only)
+		fontFace: 'Courier',
+
+		// Assume we would like a Retina-ready image
+		scale: 1,
+
+		// Padding: px
+		paddingTop: 0,
+		paddingLeft: 0,
+		paddingBottom: 0,
+		paddingRight: 0
 	}
 }
 
-const plugin = {
-	init: opts => {
-		return new Decorator(opts)
-	}
-}
-
-module.exports = ansiTo => ansiTo('image', plugin)
+module.exports = ansiTo => ansiTo(Plugin)
