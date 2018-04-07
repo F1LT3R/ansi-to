@@ -2,7 +2,7 @@ const path = require('path')
 
 const deepMerge = require('deepmerge')
 const itermcolorsToHex = require('itermcolors-to-hex')
-const ansiParse = require('@f1lt3r/ansi-parse')
+const parseAnsi = require('parse-ansi')
 
 const defaultColors = require('./colors/ansi-tag-html-colors-as-hex.json')
 const iTerm2ColorsNames = require('./ansi-tags-to-iterm2-color-names')
@@ -53,7 +53,7 @@ const plugin = pluginModule => {
 
 	const wrappedHandler = (ansi, userOpts) => {
 		const $opts = mergeOpts(pluginModule.opts, userOpts)
-		const parsed = ansiParse(ansi)
+		const parsed = parseAnsi(ansi)
 		return pluginModule.handler(parsed, $opts)
 	}
 
