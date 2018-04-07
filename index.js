@@ -5,7 +5,7 @@ const itermcolorsToHex = require('itermcolors-to-hex')
 const ansiParse = require('@f1lt3r/ansi-parse')
 
 const defaultColors = require('./colors/ansi-tag-html-colors-as-hex.json')
-const iTerm2ColorsNames = require('./types.ansi-tags-to-iterm2-color-names')
+const iTerm2ColorsNames = require('./ansi-tags-to-iterm2-color-names')
 
 const optsDefault = {
 	colors: defaultColors
