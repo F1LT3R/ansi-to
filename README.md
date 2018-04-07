@@ -2,20 +2,22 @@
 
 > 😹  export ANSI color strings to various formats: HTML, SVG, PNG.
 
-[![Lead Image](examples/ansi-to-html-lead-image-example-zoomed.png)](examples/ansi-to-html-lead-image-example-zoomed.png)
-
 [![Build Status](https://travis-ci.org/F1LT3R/ansi-to.svg?branch=master)](https://travis-ci.org/F1LT3R/ansi-to)
 [![Coverage Status](https://coveralls.io/repos/github/F1LT3R/ansi-to/badge.svg?branch=master)](https://coveralls.io/github/F1LT3R/ansi-to?branch=master)
 [![NPM Version](https://img.shields.io/npm/v/ansi-to.svg)](https://www.npmjs.com/package/ansi-to)
 [![XO code style](https://img.shields.io/badge/code_style-XO-5ed9c7.svg)](https://github.com/sindresorhus/xo)
 
-## Features
+ANSI-to takes a string of ANSI and converts it to various types of output.
 
-ANSI-to takes a string of ANSI and converts it to various types of output using the following plugins:
+For example, this SVG:
 
-    - [HTML](https://github.com.F1LT3R/ansi-to-html)
-    - [SVG](https://github.com.F1LT3R/ansi-to-svg)
-    - [PNG](https://github.com.F1LT3R/ansi-to-png)
+[![Lead Image](ansi-to-svg-example.svg)](ansi-to-svg-example.svg)
+
+ANSI-to has the following plugins available:
+
+- [HTML](https://github.com.F1LT3R/ansi-to-html)
+- [SVG](https://github.com.F1LT3R/ansi-to-svg)
+- [PNG](https://github.com.F1LT3R/ansi-to-png)
 
 Important: Do not use ANSI-to directly. Please use one of the above plugins.
 
