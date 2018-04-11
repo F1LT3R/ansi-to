@@ -1,7 +1,7 @@
 {
 	"name": "ansi-to",
 	"main": "ansi-to",
-	"version": "1.3.3",
+	"version": "1.4.0",
 	"description": "> 😹  export ANSI to HTML, SVG, PNG, w/ iTerm2 color support",
 	"license": "MIT",
 	"repository": "F1LT3R/ansi-to",

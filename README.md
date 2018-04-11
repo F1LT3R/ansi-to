@@ -16,8 +16,8 @@ For example, this SVG:
 ANSI-to has the following plugins available:
 
 - [SVG](https://github.com/F1LT3R/ansi-to-svg.git) - Export ANSI to Scalable Vector Graphics
+- [PNG, JPG](https://github.com/F1LT3R/ansi-to-image) - Export ANSI to raster image (JPG, PNG)
 - [<strike>HTML</strike>](https://github.com/F1LT3R/ansi-to-html) (coming soon)
-- [<strike>PNG</strike>](https://github.com/F1LT3R/ansi-to-png) (coming soon)
 
 Important: Do not use ANSI-to directly. Please use one of the above plugins.
 
