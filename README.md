@@ -13,7 +13,7 @@ ANSI-to takes a string of ANSI and converts it to various types of output. For e
 
 ## Support
 
-Support the development of ASI-to-SVG by [becoming a patreon](https://patreon.com/bePatron?u=9720216).
+Support the development of ANSI-to by [becoming a patreon](https://patreon.com/bePatron?u=9720216).
 
 <a href="https://patreon.com/bePatron?u=9720216"><img width="120" src="https://f1lt3r.io/content/images/2018/04/become_a_patron_button@2x.png"></a>
 
