@@ -7,11 +7,17 @@
 [![NPM Version](https://img.shields.io/npm/v/ansi-to.svg)](https://www.npmjs.com/package/ansi-to)
 [![XO code style](https://img.shields.io/badge/code_style-XO-5ed9c7.svg)](https://github.com/sindresorhus/xo)
 
-ANSI-to takes a string of ANSI and converts it to various types of output.
-
-For example, this SVG:
+ANSI-to takes a string of ANSI and converts it to various types of output. For example, this SVG:
 
 [![Lead Image](ansi-to-svg-example.svg)](ansi-to-svg-example.svg)
+
+## Support
+
+Support the development of ASI-to-SVG by [becoming a patreon](https://patreon.com/bePatron?u=9720216).
+
+<a href="https://patreon.com/bePatron?u=9720216"><img width="120" src="https://f1lt3r.io/content/images/2018/04/become_a_patron_button@2x.png"></a>
+
+## Features
 
 ANSI-to has the following plugins available:
 
