@@ -1,6 +1,6 @@
 {
 	"name": "ansi-to",
-	"main": "ansi-to",
+	"main": "index.js",
 	"version": "1.5.1",
 	"description": "😹  export ANSI to HTML, SVG, PNG, w/ iTerm2 color support",
 	"license": "MIT",
